@@ -107,6 +107,7 @@
 
 
             @yield('content')
+
         </main>
     </div>
 

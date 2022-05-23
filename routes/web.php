@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PaymentController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +23,11 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+
+Route::post('/payment/pay', [PaymentController::class, 'pay'])->name('pay');
+
+Route::get('/payment/approval', [PaymentController::class, 'approval'])->name('approval');
+Route::get('/payment/cancelled', [PaymentController::class, 'cancelled'])->name('cancelled');
+

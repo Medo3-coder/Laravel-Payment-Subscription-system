@@ -8,7 +8,7 @@
                     <div class="card-header">Make a Payment</div>
 
                     <div class="card-body">
-                        <form action="" method="POST" id="paymentForm">
+                        <form action="{{ route('pay') }}" method="POST" id="paymentForm">
                             @csrf
                             <div class="row">
                                 <div class="col-auto">
@@ -37,31 +37,40 @@
                                     </select>
                                 </div>
                             </div>
-
                             <div class="row mt-3">
                                 <div class="col">
                                     <label>
-                                        Select a Desird Payment Platform
+                                        Select the desired payment platform
                                     </label>
-                                </div>
-                                <div class="form-group">
-                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
-                                        @foreach($paymentPlatforms as $paymentPlatform)
-                                          <label class="btn btn-outline-secondary rounded m-2 p-1">
-                                            <input
-                                            type="radio"
-                                            name="payment_platform"
-                                            value="{{ $paymentPlatform->id }}"
-                                            required
-                                        >
-                                        <img class="img-thumbnail" src="{{ asset($paymentPlatform->image) }}" width="100" height="100">
-
-                                          </label>
+                                    <div class="form-group" id="toggler">
+                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                            @foreach ($paymentPlatforms as $paymentPlatform)
+                                                <label
+                                                    class="btn btn-outline-secondary rounded m-2 p-1"
+                                                    data-target="#{{ $paymentPlatform->name }}Collapse"
+                                                    data-toggle="collapse"
+                                                >
+                                                    <input
+                                                        type="radio"
+                                                        name="payment_platform"
+                                                        value="{{ $paymentPlatform->id }}"
+                                                        required
+                                                    >
+                                                    <img class="img-thumbnail" src="{{ asset($paymentPlatform->image) }}" width="100" height="100">
+                                                </label>
+                                            @endforeach
+                                        </div>
+                                        @foreach ($paymentPlatforms as $paymentPlatform)
+                                            <div
+                                                id="{{ $paymentPlatform->name }}Collapse"
+                                                class="collapse"
+                                                data-parent="#toggler"
+                                            >
+                                                @includeIf ('components.' . strtolower($paymentPlatform->name) . '-collapse')
+                                            </div>
                                         @endforeach
-
                                     </div>
                                 </div>
-
                             </div>
 
                             <div class="text-center mt-3">
@@ -76,4 +85,8 @@
             </div>
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+
 @endsection
