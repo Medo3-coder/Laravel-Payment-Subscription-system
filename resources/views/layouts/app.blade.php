@@ -18,6 +18,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @stack('styles')
 </head>
 <body>
     <div id="app">
@@ -33,6 +34,10 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav me-auto">
+
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('home') }}">{{ __('Home') }}</a>
+                        </li>
 
                     </ul>
 
@@ -76,8 +81,35 @@
         </nav>
 
         <main class="py-4">
+
+
+    <div class="container">
+        @if (isset($errors) && $errors->any())
+        @foreach ($errors->all() as $error)
+            <div class="alert alert-danger" role="alert">
+                {{ $error }}
+            </div>
+        @endforeach
+    @endif
+
+
+       @if (session()->has('success'))
+        <div class="alert alert-success" role="alert">
+            <ul>
+                @foreach ( session()->get('success') as  $message)
+                    <li>{{ $message }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+    </div>
+
+
+
             @yield('content')
         </main>
     </div>
+
+    @stack('scripts')
 </body>
 </html>
