@@ -8,27 +8,60 @@
                     <div class="card-header">Make a Payment</div>
 
                     <div class="card-body">
-                        <form action="" method="POST">
+                        <form action="" method="POST" id="paymentForm">
                             @csrf
                             <div class="row">
                                 <div class="col-auto">
-                                    <label for="">How Much You Want to Pay</label>
-                                    <input type="number" name="value" class="form-control" min="5" step="0.01"
-                                        value="{{ mt_rand(500, 100000) / 100 }}" required>
+                                    <label>How much you want to pay?</label>
+                                    <input
+                                        type="number"
+                                        min="5"
+                                        step="0.01"
+                                        class="form-control"
+                                        name="value"
+                                        value="{{ mt_rand(500, 100000) / 100 }}"
+                                        required
+                                    >
+                                    <small class="form-text text-muted">
+                                        Use values with up to two decimal positions, using a dot "."
+                                    </small>
                                 </div>
                                 <div class="col-auto">
-                                    <label for=""> Currency</label>
-                                    <br>
-                                <select class="custom-select" name="currency" required>
-
-                                    @foreach ($currencies as $currency)
-                                        <option value="{{ $currency->iso }}">{{ strtoupper($currency->iso) }}</option>
-
-                                     @endforeach
-
-                                </select>
-
+                                    <label>Currency</label>
+                                    <select class="custom-select" name="currency" required>
+                                        @foreach ($currencies as $currency)
+                                            <option value="{{ $currency->iso }}">
+                                                {{ strtoupper($currency->iso) }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
+                            </div>
+
+                            <div class="row mt-3">
+                                <div class="col">
+                                    <label>
+                                        Select a Desird Payment Platform
+                                    </label>
+                                </div>
+                                <div class="form-group">
+                                    <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                        @foreach($paymentPlatforms as $paymentPlatform)
+                                          <label class="btn btn-outline-secondary rounded m-2 p-1">
+                                            <input
+                                            type="radio"
+                                            name="payment_platform"
+                                            value="{{ $paymentPlatform->id }}"
+                                            required
+                                        >
+                                        <img class="img-thumbnail" src="{{ asset($paymentPlatform->image) }}" width="100" height="100">
+
+                                          </label>
+                                        @endforeach
+
+                                    </div>
+                                </div>
+
                             </div>
 
                             <div class="text-center mt-3">
