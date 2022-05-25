@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Services;
 
 use App\Traits\ConsumesExternalServices;
@@ -7,29 +8,28 @@ use Illuminate\Foundation\Auth\User;
 class PayPalService
 {
 
-  use ConsumesExternalServices;
+    use ConsumesExternalServices;
 
-  protected $baseUri;
-  protected $clientId;
-  protected $clientSecret;
+    protected $baseUri;
+    protected $clientId;
+    protected $clientSecret;
 
-  public function __construct()
-  {
-      $this->baseUri = config('services.paypal.base_uri');
-      $this->clientId = config('services.paypal.client_id');
-      $this->clientSecret = config('services.paypal.client_secret');
-
-  }
-
-    public function resolveAuthorization(&$queryParams , &$headers , &$formParams)
+    public function __construct()
     {
-       $headers['authorization'] = $this->resolveAccessToken();
+        $this->baseUri = config('services.paypal.base_uri');
+        $this->clientId = config('services.paypal.client_id');
+        $this->clientSecret = config('services.paypal.client_secret');
+    }
+
+    public function resolveAuthorization(&$queryParams, &$headers, &$formParams)
+    {
+        $headers['authorization'] = $this->resolveAccessToken();
     }
 
 
     public function decodeResponse($response)
     {
-      return json_decode($response);
+        return json_decode($response);
     }
 
     public function resolveAccessToken()
@@ -39,4 +39,35 @@ class PayPalService
         return "Basic {$credentials}";
     }
 
+
+
+
+    public function createOrder($value, $currency)
+    {
+        return $this->makeRequest(
+            'POST',
+            '/v2/checkout/orders',
+            [],
+            [
+                'intent' => 'CAPTURE',
+                'purchase_units' => [
+                    0 => [
+                        'amount' => [
+                            'currency_code' =>strtoupper($currency),
+                            'value' => $value,
+                        ]
+                    ]
+                ],
+                'application_context' => [
+                    'brand_name' => config('app.name'),
+                    'shipping_preference' => 'NO_SHIPPING',
+                    'user_action' => 'PAY_NOW',
+                    'return_url' => route('approval'),
+                    'cancel_url' => route('cancelled'),
+                ]
+            ],
+            [],
+            $isJsonRequest = true,
+        );
+    }
 }
