@@ -2,6 +2,7 @@
 namespace App\Services;
 
 use App\Traits\ConsumesExternalServices;
+use Illuminate\Foundation\Auth\User;
 
 class PayPalService
 {
@@ -22,13 +23,20 @@ class PayPalService
 
     public function resolveAuthorization(&$queryParams , &$headers , &$formParams)
     {
-
+       $headers['authorization'] = $this->resolveAccessToken();
     }
 
 
     public function decodeResponse($response)
     {
+      return json_decode($response);
+    }
 
+    public function resolveAccessToken()
+    {
+        $credentials = base64_encode("{$this->clientId}:{$this->clientSecret}");
+
+        return "Basic {$credentials}";
     }
 
 }
